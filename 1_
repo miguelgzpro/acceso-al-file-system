@@ -1,0 +1,39 @@
+const fs = require("fs").promises;
+async function main() {
+     const salesFiles = await findSalesFiles("stores");
+  console.log(salesFiles);
+}
+main();
+
+async function findSalesFiles(folderName) {
+  // este array tendra archivos de ventas a medida que se encuentren
+  let salesFiles = [];
+
+  async function findFiles(folderName) {
+   // leer todos los items en el directorio actual
+      const items = await fs.readdir(folderName, { withFileTypes: true });
+   //iterar sobre cada item encontrado
+       for (item of items) {
+    if (item.isDirectory()) {
+        // search this directory for files (this is recursion!)
+        await findFiles(`${folderName}/${item.name}`);
+      } else {
+      // nos aseguramos que el archivo encontrado es j.son file
+        if (item.name === "sales.json") {
+      // guardamos el path del archivo en el array salesFiles
+          salesFiles.push(`${folderName}/${item.name}`);
+        }
+      }
+    }
+  }
+    await findFiles(folderName);
+  return salesFiles;
+}
+comandos usado para dirigirnos al archivo 
+pwd
+ls
+cd node ..nombre de la carpeta..
+ls 
+cd stores
+cd .. retroceder
+node index.js para ejecutar
